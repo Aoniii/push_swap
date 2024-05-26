@@ -1,0 +1,6 @@
+/.vscode
+checker_linux
+/objects
+push_swap
+/libft/*.o
+/libft/libft.a
