@@ -14,6 +14,8 @@
 # define PUSHSWAP_H
 
 # include "libft.h"
+# include <stdbool.h>
+# include <stdio.h>
 
 t_list	*args(char **argv);
 
