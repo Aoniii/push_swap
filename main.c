@@ -12,7 +12,7 @@
 
 #include "pushswap.h"
 
-void cleanup(t_list **list)
+void	cleanup(t_list **list)
 {
 	if (list && list[0])
 		ft_lstclear(&list[0], &free);
