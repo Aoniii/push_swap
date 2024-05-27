@@ -12,7 +12,7 @@
 
 #include <pushswap.h>
 
-bool	check(char *s)
+static bool	check(char *s)
 {
 	int	index;
 
@@ -34,7 +34,7 @@ bool	check(char *s)
 	return (1);
 }
 
-bool	duplicate(char **argv)
+static bool	duplicate(char **argv)
 {
 	int	index;
 

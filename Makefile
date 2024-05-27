@@ -1,6 +1,10 @@
 NAME		=	push_swap
 SRCS		=	main.c \
-				sources/parsing.c
+				sources/parsing.c \
+				sources/swap.c \
+				sources/push.c \
+				sources/rotate.c \
+				sources/reverse_rotate.c
 OBJS		=	$(SRCS:.c=.o)
 OBJS_DIR 	=	objects
 OBJS_PATH	=	$(addprefix $(OBJS_DIR)/, $(OBJS))

@@ -1,45 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: snourry <snourry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/26 21:22:30 by snourry           #+#    #+#             */
-/*   Updated: 2024/05/26 21:22:30 by snourry          ###   ########.fr       */
+/*   Created: 2024/05/27 12:21:19 by snourry           #+#    #+#             */
+/*   Updated: 2024/05/27 12:21:19 by snourry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-void	cleanup(t_list **list)
+static void	operator(t_list **list, t_type src, t_type dest)
 {
-	if (list && list[A])
-		ft_lstclear(&list[A], &free);
-	free(list);
-	list = NULL;
+	t_list	*tmp;
+
+	if (!list[src])
+		return ;
+	tmp = list[src];
+	list[src] = list[src]->next;
+	tmp->next = list[dest];
+	list[dest] = tmp;
 }
 
-int	main(int argc, char **argv)
+void	push(t_list **list, t_type type)
 {
-	t_list	**list;
-
-	list = malloc(sizeof(t_list *) * 2);
-	if (!list || argc == 1)
+	if (type == A)
 	{
-		free(list);
-		list = NULL;
-		ft_putstr_fd("Error\n", 2);
-		return (1);
+		operator(list, B, A);
+		ft_putendl_fd("pa", 1);
 	}
-	list[A] = args(&argv[1]);
-	if (!list[A])
+	else if (type == B)
 	{
-		cleanup(list);
-		ft_putstr_fd("Error\n", 2);
-		return (1);
+		operator(list, A, B);
+		ft_putendl_fd("pb", 1);
 	}
-	list[B] = NULL;
-	cleanup(list);
-	return (0);
 }
