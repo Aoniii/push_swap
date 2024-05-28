@@ -4,7 +4,9 @@ SRCS		=	main.c \
 				sources/swap.c \
 				sources/push.c \
 				sources/rotate.c \
-				sources/reverse_rotate.c
+				sources/reverse_rotate.c \
+				sources/sort.c \
+				sources/utils.c
 OBJS		=	$(SRCS:.c=.o)
 OBJS_DIR 	=	objects
 OBJS_PATH	=	$(addprefix $(OBJS_DIR)/, $(OBJS))

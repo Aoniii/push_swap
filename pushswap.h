@@ -29,5 +29,11 @@ void	swap(t_list **list, t_type type);
 void	push(t_list **list, t_type type);
 void	rotate(t_list **list, t_type type);
 void	reverse_rotate(t_list **list, t_type type);
+void	sort(t_list **list);
+bool	is_sorted(t_list **list);
+int		get_max_value(t_list *list);
+int		get_min_value(t_list *list);
+void	free_argv(char **argv);
+bool	is_min(t_list *list, int min);
 
 #endif

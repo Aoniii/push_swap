@@ -40,6 +40,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	list[B] = NULL;
+	sort(list);
 	cleanup(list);
 	return (0);
 }

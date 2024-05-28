@@ -12,9 +12,10 @@
 
 #include "pushswap.h"
 
-static t_list	*ft_lstpenultimate(t_list *lst)
+static t_list	*list_penultimate(t_list *lst)
 {
 	t_list	*out;
+
 	while (lst)
 	{
 		if (!lst->next)
@@ -25,14 +26,13 @@ static t_list	*ft_lstpenultimate(t_list *lst)
 	return (0);
 }
 
-
 static void	operator(t_list **list)
 {
 	t_list	*tmp;
 
 	if (ft_lstsize(*list) < 2)
 		return ;
-	tmp = ft_lstpenultimate(*list);
+	tmp = list_penultimate(*list);
 	tmp->next->next = *list;
 	*list = tmp->next;
 	tmp->next = NULL;
