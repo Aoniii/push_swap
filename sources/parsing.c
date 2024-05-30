@@ -19,7 +19,7 @@ static bool	check(char *s)
 	index = 0;
 	if (!s || !s[0])
 		return (0);
-	if (s[index] == '-' && s[index + 1] != 0)
+	if (s[0] == '-' && s[1] != 0)
 		index++;
 	while (s[index])
 	{
@@ -27,9 +27,11 @@ static bool	check(char *s)
 			return (0);
 		index++;
 	}
-	if (s[0] == '-' && index >= 11 && ft_strncmp("-2147483648", s, 12) < 0)
+	if (s[0] == '-' && (index > 11 || \
+		(index == 11 && ft_strncmp("-2147483648", s, 20) < 0)))
 		return (0);
-	if (s[0] != '-' && index >= 10 && ft_strncmp("2147483647", s, 11) < 0)
+	if (s[0] != '-' && (index > 10 || \
+		(index == 10 && ft_strncmp("2147483647", s, 20) < 0)))
 		return (0);
 	return (1);
 }
