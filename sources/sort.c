@@ -59,4 +59,6 @@ void	sort(t_list **list)
 		sort_four(list);
 	else if (size == 5)
 		sort_five(list);
+	else
+		sort_big(list);
 }

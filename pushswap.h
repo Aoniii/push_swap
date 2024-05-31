@@ -35,5 +35,7 @@ int		get_max_value(t_list *list);
 int		get_min_value(t_list *list);
 void	free_argv(char **argv);
 bool	is_min(t_list *list, int min);
+void	sort_big(t_list **list);
+int		get_median(t_list **list);
 
 #endif
