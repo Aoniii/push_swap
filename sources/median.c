@@ -12,7 +12,7 @@
 
 #include "pushswap.h"
 
-static int	get_min(t_list *list, int min)
+static int	find_min(t_list *list, int min)
 {
 	int	out;
 
@@ -28,26 +28,17 @@ static int	get_min(t_list *list, int min)
 
 int	get_median(t_list **list)
 {
-	int		*tab;
-	int		size;
-	int		i;
+	int prev;
+	int	size;
+	int	i;
 
 	size = ft_lstsize(list[A]);
-	tab = malloc(sizeof(int) * size);
-	if (!tab)
-		return (0);
+	prev = get_min_value(list[A]);
 	i = 1;
-	tab[0] = get_min_value(list[A]);
-	while (i < size)
+	while (i < size / 2 + 1)
 	{
-		tab[i] = get_min(list[A], tab[i - 1]);
+		prev = find_min(list[A], prev);
 		i++;
 	}
-	if (size % 2 == 0)
-		i = (tab[size / 2 - 1] + tab[size / 2]) / 2;
-	else
-		i = tab[size / 2];
-	free(tab);
-	tab = NULL;
-	return (i);
+	return (prev);
 }
