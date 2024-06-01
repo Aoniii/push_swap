@@ -33,7 +33,10 @@ static void	sort_four(t_list **list)
 
 static void	sort_five(t_list **list)
 {
-	while (!is_min(list[A], 2))
+	int	min;
+
+	min = identify_bottom(list[A], 2);
+	while (*((int *)(list[A]->content)) > min)
 		rotate(list, A);
 	push(list, B);
 	sort_four(list);

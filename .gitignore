@@ -4,3 +4,4 @@ checker_linux
 push_swap
 /libft/*.o
 /libft/libft.a
+push_swap-42

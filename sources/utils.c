@@ -72,22 +72,3 @@ int	get_min_value(t_list *list)
 	}
 	return (out);
 }
-
-bool	is_min(t_list *list, int min)
-{
-	int	value;
-	int	i;
-
-	i = 0;
-	value = *((int *)(list->content));
-	list = list->next;
-	while (list)
-	{
-		if (*((int *)(list->content)) < value)
-			i++;
-		list = list->next;
-	}
-	if (i < min)
-		return (1);
-	return (0);
-}
