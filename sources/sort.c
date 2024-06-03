@@ -31,7 +31,7 @@ static void	sort_four(t_list **list)
 	push(list, A);
 }
 
-static void	sort_five(t_list **list)
+void	sort_five(t_list **list)
 {
 	int	min;
 

@@ -72,3 +72,16 @@ int	get_min_value(t_list *list)
 	}
 	return (out);
 }
+
+int	get_at_index(t_list *list, int index)
+{
+	int	i;
+
+	i = 0;
+	while (i < index)
+	{
+		list = list->next;
+		i++;
+	}
+	return (*((int *)(list->content)));
+}

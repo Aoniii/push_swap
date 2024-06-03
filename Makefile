@@ -8,7 +8,8 @@ SRCS		=	main.c \
 				sources/sort.c \
 				sources/utils.c \
 				sources/sort_big.c \
-				sources/utils2.c
+				sources/utils2.c \
+				sources/calculate.c
 OBJS		=	$(SRCS:.c=.o)
 OBJS_DIR 	=	objects
 OBJS_PATH	=	$(addprefix $(OBJS_DIR)/, $(OBJS))
