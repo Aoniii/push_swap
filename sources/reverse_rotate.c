@@ -30,7 +30,7 @@ static void	operator(t_list **list)
 {
 	t_list	*tmp;
 
-	if (ft_lstsize(*list) < 2)
+	if (!(*list)->next)
 		return ;
 	tmp = list_penultimate(*list);
 	tmp->next->next = *list;
