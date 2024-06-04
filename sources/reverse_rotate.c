@@ -38,22 +38,25 @@ static void	operator(t_list **list)
 	tmp->next = NULL;
 }
 
-void	reverse_rotate(t_list **list, t_type type)
+void	reverse_rotate(t_list **list, t_type type, bool print)
 {
 	if (type == A)
 	{
 		operator(&list[A]);
-		ft_putendl_fd("rra", 1);
+		if (print)
+			ft_putendl_fd("rra", 1);
 	}
 	else if (type == B)
 	{
 		operator(&list[B]);
-		ft_putendl_fd("rrb", 1);
+		if (print)
+			ft_putendl_fd("rrb", 1);
 	}
 	else if (type == BOTH)
 	{
 		operator(&list[A]);
 		operator(&list[B]);
-		ft_putendl_fd("rrr", 1);
+		if (print)
+			ft_putendl_fd("rrr", 1);
 	}
 }

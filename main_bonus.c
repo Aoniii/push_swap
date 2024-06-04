@@ -12,6 +12,8 @@
 
 #include "pushswap.h"
 
+void	checker(t_list **list);
+
 void	cleanup(t_list **list)
 {
 	if (list && list[A])
@@ -40,6 +42,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	list[B] = NULL;
-	//
+	checker(list);
+	cleanup(list);
 	return (0);
 }

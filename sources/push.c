@@ -24,16 +24,18 @@ static void	operator(t_list **list, t_type src, t_type dest)
 	list[dest] = tmp;
 }
 
-void	push(t_list **list, t_type type)
+void	push(t_list **list, t_type type, bool print)
 {
 	if (type == A)
 	{
 		operator(list, B, A);
-		ft_putendl_fd("pa", 1);
+		if (print)
+			ft_putendl_fd("pa", 1);
 	}
 	else if (type == B)
 	{
 		operator(list, A, B);
-		ft_putendl_fd("pb", 1);
+		if (print)
+			ft_putendl_fd("pb", 1);
 	}
 }

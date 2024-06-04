@@ -20,7 +20,8 @@ SRCS_BONUS		=	main_bonus.c \
 					sources/utils.c \
 					sources/utils2.c \
 					get_next_line/get_next_line_bonus.c \
-					get_next_line/get_next_line_utils_bonus.c
+					get_next_line/get_next_line_utils_bonus.c \
+					bonus/checker_bonus.c
 OBJS			=	$(SRCS:.c=.o)
 OBJS_BONUS		=	$(SRCS_BONUS:.c=.o)
 OBJS_DIR 		=	objects
@@ -41,7 +42,7 @@ $(NAME): $(OBJS_PATH)
 
 $(NAME_BONUS): $(OBJS_PATH_BONUS)
 	make bonus -C $(LIBFT)
-	$(CC) $(OBJS_PATH_BONUS) -o $(NAME_BONUS) $(CFLAGS) -I$(GNL)
+	$(CC) $(OBJS_PATH_BONUS) -o $(NAME_BONUS) $(CFLAGS)
 
 all: $(NAME)
 

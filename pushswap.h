@@ -33,10 +33,10 @@ typedef struct s_rotate
 }		t_rotate;
 
 t_list		*args(char **argv);
-void		swap(t_list **list, t_type type);
-void		push(t_list **list, t_type type);
-void		rotate(t_list **list, t_type type);
-void		reverse_rotate(t_list **list, t_type type);
+void		swap(t_list **list, t_type type, bool print);
+void		push(t_list **list, t_type type, bool print);
+void		rotate(t_list **list, t_type type, bool print);
+void		reverse_rotate(t_list **list, t_type type, bool print);
 void		sort(t_list **list);
 void		sort_five(t_list **list);
 void		sort_big(t_list **list);

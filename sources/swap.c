@@ -24,22 +24,25 @@ static void	operator(t_list **list)
 	(*list)->next = tmp;
 }
 
-void	swap(t_list **list, t_type type)
+void	swap(t_list **list, t_type type, bool print)
 {
 	if (type == A)
 	{
 		operator(&list[A]);
-		ft_putendl_fd("sa", 1);
+		if (print)
+			ft_putendl_fd("sa", 1);
 	}
 	else if (type == B)
 	{
 		operator(&list[B]);
-		ft_putendl_fd("sb", 1);
+		if (print)
+			ft_putendl_fd("sb", 1);
 	}
 	else if (type == BOTH)
 	{
 		operator(&list[A]);
 		operator(&list[B]);
-		ft_putendl_fd("ss", 1);
+		if (print)
+			ft_putendl_fd("ss", 1);
 	}
 }

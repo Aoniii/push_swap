@@ -24,22 +24,25 @@ static void	operator(t_list **list)
 	ft_lstlast(*list)->next = tmp;
 }
 
-void	rotate(t_list **list, t_type type)
+void	rotate(t_list **list, t_type type, bool print)
 {
 	if (type == A)
 	{
 		operator(&list[A]);
-		ft_putendl_fd("ra", 1);
+		if (print)
+			ft_putendl_fd("ra", 1);
 	}
 	else if (type == B)
 	{
 		operator(&list[B]);
-		ft_putendl_fd("rb", 1);
+		if (print)
+			ft_putendl_fd("rb", 1);
 	}
 	else if (type == BOTH)
 	{
 		operator(&list[A]);
 		operator(&list[B]);
-		ft_putendl_fd("rr", 1);
+		if (print)
+			ft_putendl_fd("rr", 1);
 	}
 }

@@ -26,14 +26,14 @@ static void	push_median(t_list **list, int median)
 	}
 	if (i <= ft_lstsize(list[A]) - i)
 		while (i--)
-			rotate(list, A);
+			rotate(list, A, 1);
 	else
 	{
 		i = ft_lstsize(list[A]) - i;
 		while (i--)
-			reverse_rotate(list, A);
+			reverse_rotate(list, A, 1);
 	}
-	push(list, B);
+	push(list, B, 1);
 }
 
 static void	push_b(t_list **list, int median)
@@ -47,18 +47,18 @@ static void	push_b(t_list **list, int median)
 	{
 		if (*((int *)(list[A]->content)) < max)
 		{
-			push(list, B);
+			push(list, B, 1);
 			size--;
 			if (*((int *)(list[B]->content)) > median)
 			{
 				if (*((int *)(list[A]->content)) >= max && list[A]->next)
-					rotate(list, BOTH);
+					rotate(list, BOTH, 1);
 				else
-					rotate(list, B);
+					rotate(list, B, 1);
 			}
 		}
 		else
-			rotate(list, A);
+			rotate(list, A, 1);
 	}
 }
 
@@ -68,23 +68,23 @@ static void	apply(t_list **list, t_rotate r)
 	{
 		r.ra--;
 		r.rb--;
-		rotate(list, BOTH);
+		rotate(list, BOTH, 1);
 	}
 	while (r.rra > 0 && r.rrb > 0)
 	{
 		r.rra--;
 		r.rrb--;
-		reverse_rotate(list, BOTH);
+		reverse_rotate(list, BOTH, 1);
 	}
 	while (r.ra--)
-		rotate(list, A);
+		rotate(list, A, 1);
 	while (r.rb--)
-		rotate(list, B);
+		rotate(list, B, 1);
 	while (r.rra--)
-		reverse_rotate(list, A);
+		reverse_rotate(list, A, 1);
 	while (r.rrb--)
-		reverse_rotate(list, B);
-	push(list, A);
+		reverse_rotate(list, B, 1);
+	push(list, A, 1);
 }
 
 static void	set_first(t_list **list)
@@ -106,12 +106,12 @@ static void	set_first(t_list **list)
 	if (i <= size - i)
 	{
 		while (i--)
-			rotate(list, A);
+			rotate(list, A, 1);
 		return ;
 	}
 	i = size - i;
 	while (i--)
-		reverse_rotate(list, A);
+		reverse_rotate(list, A, 1);
 }
 
 void	sort_big(t_list **list)

@@ -15,20 +15,20 @@
 static void	sort_three(t_list **list)
 {
 	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A);
+		swap(list, A, 1);
 	if (*((int *)(list[A]->next->next->content)) != get_max_value(list[A]))
-		reverse_rotate(list, A);
+		reverse_rotate(list, A, 1);
 	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A);
+		swap(list, A, 1);
 }
 
 static void	sort_four(t_list **list)
 {
 	while (*((int *)(list[A]->content)) != get_min_value(list[A]))
-		rotate(list, A);
-	push(list, B);
+		rotate(list, A, 1);
+	push(list, B, 1);
 	sort_three(list);
-	push(list, A);
+	push(list, A, 1);
 }
 
 void	sort_five(t_list **list)
@@ -37,12 +37,12 @@ void	sort_five(t_list **list)
 
 	min = identify_bottom(list[A], 2);
 	while (*((int *)(list[A]->content)) > min)
-		rotate(list, A);
-	push(list, B);
+		rotate(list, A, 1);
+	push(list, B, 1);
 	sort_four(list);
-	push(list, A);
+	push(list, A, 1);
 	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A);
+		swap(list, A, 1);
 }
 
 void	sort(t_list **list)
@@ -55,7 +55,7 @@ void	sort(t_list **list)
 	if (size < 2)
 		return ;
 	else if (size == 2)
-		swap(list, A);
+		swap(list, A, 1);
 	else if (size == 3)
 		sort_three(list);
 	else if (size == 4)
