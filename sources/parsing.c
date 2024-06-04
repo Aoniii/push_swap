@@ -21,6 +21,8 @@ static bool	check(char *s)
 		return (0);
 	if (s[0] == '-' && s[1] != 0)
 		index++;
+	if (s[index] == '0' && (index != 0 || s[index + 1] != 0))
+		return (0);
 	while (s[index])
 	{
 		if (!ft_isdigit(s[index]))
