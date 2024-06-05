@@ -17,20 +17,16 @@ static void	push_median(t_list **list, int median)
 	t_list	*lst;
 	int		i;
 
-	i = -1;
+	i = 0;
 	lst = list[A];
-	while (*((int *)(lst->content)) != median && ++i > 0)
-		lst = lst->next;
-	if (i <= ft_lstsize(list[A]) - i)
+	while (*((int *)(lst->content)) != median)
 	{
-		while (i--)
-		{
-			if (*((int *)(list[A]->content)) > median)
-				push(list, B, 1);
-			else
-				rotate(list, A, 1);
-		}
+		lst = lst->next;
+		i++;
 	}
+	if (i <= ft_lstsize(list[A]) - i)
+		while (i--)
+			rotate(list, A, 1);
 	else
 	{
 		i = ft_lstsize(list[A]) - i;
