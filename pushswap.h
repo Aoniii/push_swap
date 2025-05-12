@@ -30,7 +30,7 @@ typedef struct s_rotate
 	int	rra;
 	int	rb;
 	int	rrb;
-}		t_rotate;
+}	t_rotate;
 
 t_list		*args(char **argv);
 void		swap(t_list **list, t_type type, bool print);

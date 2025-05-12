@@ -45,9 +45,9 @@ SRCS = ft_isalpha.c \
 	ft_putendl_fd.c \
 	ft_putnbr_fd.c
 
-OBJS = ${SRCS:.c=.o}
-
-CFLAGS = -Wall -Wextra -Werror -I includes
+OBJS	= ${SRCS:.c=.o}
+CFLAGS	= -Wall -Wextra -Werror -I includes
+CC		= gcc
 
 ${NAME}: ${OBJS}
 	ar rcs $@ $^

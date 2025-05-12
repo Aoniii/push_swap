@@ -10,16 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pushswap.h"
+#include "pushswap_bonus.h"
 
 char	*get_next_line(int fd);
-
-typedef struct s_instruction
-{
-	void		((*f)(t_list **, t_type, bool));
-	t_type		type;
-	char		*code;
-}				t_instruction;
 
 static int	do_instruction(char *line, t_list **list)
 {
