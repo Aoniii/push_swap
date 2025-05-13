@@ -12,32 +12,6 @@
 
 #include <pushswap.h>
 
-static bool	check(char *s)
-{
-	int	index;
-
-	index = 0;
-	if (!s || !s[0])
-		return (0);
-	if (s[0] == '-' && s[1] != 0)
-		index++;
-	if (s[index] == '0' && (index != 0 || s[index + 1] != 0))
-		return (0);
-	while (s[index])
-	{
-		if (!ft_isdigit(s[index]))
-			return (0);
-		index++;
-	}
-	if (s[0] == '-' && (index > 11 || \
-		(index == 11 && ft_strncmp("-2147483648", s, 20) < 0)))
-		return (0);
-	if (s[0] != '-' && (index > 10 || \
-		(index == 10 && ft_strncmp("2147483647", s, 20) < 0)))
-		return (0);
-	return (1);
-}
-
 static bool	duplicate(char **argv)
 {
 	int	index;
@@ -67,33 +41,10 @@ static char	**single_arg(char **argv, bool *b)
 	return (argv);
 }
 
-static t_list	*creat(char **argv)
+t_container	*args(char **argv)
 {
-	t_list	*list;
-	int		*nb;
-
-	list = NULL;
-	while (*argv)
-	{
-		nb = malloc(sizeof(int));
-		if (!nb || !check(*argv))
-		{
-			free(nb);
-			nb = NULL;
-			ft_lstclear(&list, &free);
-			return (NULL);
-		}
-		*nb = ft_atoi(*argv);
-		ft_lstadd_back(&list, ft_lstnew(nb));
-		argv++;
-	}
-	return (list);
-}
-
-t_list	*args(char **argv)
-{
-	t_list	*list;
-	bool	b;
+	t_container	*container;
+	bool		b;
 
 	argv = single_arg(argv, &b);
 	if (!argv)
@@ -104,8 +55,8 @@ t_list	*args(char **argv)
 			free_argv(argv);
 		return (NULL);
 	}
-	list = creat(argv);
+	container = creat(argv);
 	if (b)
 		free_argv(argv);
-	return (list);
+	return (container);
 }

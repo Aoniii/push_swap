@@ -12,56 +12,61 @@
 
 #include "pushswap.h"
 
-static void	sort_three(t_list **list)
+static void	sort_three(t_container **container)
 {
-	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A, 1);
-	if (*((int *)(list[A]->next->next->content)) != get_max_value(list[A]))
-		reverse_rotate(list, A, 1);
-	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A, 1);
+	if (*((int *)(container[A]->head->content)) > \
+	*((int *)(container[A]->head->next->content)))
+		swap(container, A, 1);
+	if (*((int *)(container[A]->tail->content)) != \
+	get_max_value(container[A]->head))
+		reverse_rotate(container, A, 1);
+	if (*((int *)(container[A]->head->content)) > \
+	*((int *)(container[A]->head->next->content)))
+		swap(container, A, 1);
 }
 
-static void	sort_four(t_list **list)
+static void	sort_four(t_container **container)
 {
-	while (*((int *)(list[A]->content)) != get_min_value(list[A]))
-		rotate(list, A, 1);
-	push(list, B, 1);
-	sort_three(list);
-	push(list, A, 1);
+	while (*((int *)(container[A]->head->content)) != \
+	get_min_value(container[A]->head))
+		rotate(container, A, 1);
+	push(container, B, 1);
+	sort_three(container);
+	push(container, A, 1);
 }
 
-void	sort_five(t_list **list)
+void	sort_five(t_container **container)
 {
 	int	min;
 
-	min = identify_bottom(list[A], 2);
-	while (*((int *)(list[A]->content)) > min)
-		rotate(list, A, 1);
-	push(list, B, 1);
-	sort_four(list);
-	push(list, A, 1);
-	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
-		swap(list, A, 1);
+	min = identify_bottom(container[A]->head, 2);
+	while (*((int *)(container[A]->head->content)) > min)
+		rotate(container, A, 1);
+	push(container, B, 1);
+	sort_four(container);
+	push(container, A, 1);
+	if (*((int *)(container[A]->head->content)) > \
+	*((int *)(container[A]->head->next->content)))
+		swap(container, A, 1);
 }
 
-void	sort(t_list **list)
+void	sort(t_container **container)
 {
 	int	size;
 
-	if (is_sorted(list))
+	if (is_sorted(container))
 		return ;
-	size = ft_lstsize(list[A]);
+	size = container[A]->size;
 	if (size < 2)
 		return ;
 	else if (size == 2)
-		swap(list, A, 1);
+		swap(container, A, 1);
 	else if (size == 3)
-		sort_three(list);
+		sort_three(container);
 	else if (size == 4)
-		sort_four(list);
+		sort_four(container);
 	else if (size == 5)
-		sort_five(list);
+		sort_five(container);
 	else
-		sort_big(list);
+		sort_big(container);
 }

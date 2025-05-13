@@ -14,7 +14,7 @@
 
 char	*get_next_line(int fd);
 
-static int	do_instruction(char *line, t_list **list)
+static int	do_instruction(char *line, t_container **container)
 {
 	int							i;
 	static const t_instruction	instruction[] = {
@@ -35,7 +35,7 @@ static int	do_instruction(char *line, t_list **list)
 	{
 		if (ft_strncmp(line, instruction[i].code, 5) == 0)
 		{
-			instruction[i].f(list, instruction[i].type, 0);
+			instruction[i].f(container, instruction[i].type, 0);
 			return (1);
 		}
 		i++;
@@ -43,7 +43,7 @@ static int	do_instruction(char *line, t_list **list)
 	return (0);
 }
 
-void	checker(t_list **list)
+void	checker(t_container **container)
 {
 	char	*line;
 
@@ -52,7 +52,7 @@ void	checker(t_list **list)
 		return ;
 	while (line)
 	{
-		if (do_instruction(line, list) == 0)
+		if (do_instruction(line, container) == 0)
 		{
 			while (line)
 			{
@@ -65,7 +65,7 @@ void	checker(t_list **list)
 		free(line);
 		line = get_next_line(0);
 	}
-	if (is_sorted(list))
+	if (is_sorted(container))
 		ft_putendl_fd("OK", 1);
 	else
 		ft_putendl_fd("KO", 1);

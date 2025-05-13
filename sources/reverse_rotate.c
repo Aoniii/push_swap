@@ -12,50 +12,39 @@
 
 #include "pushswap.h"
 
-static t_list	*list_penultimate(t_list *lst)
+static void	operator(t_container **container, t_type type)
 {
-	t_list	*out;
+	t_stack	*tmp;
 
-	while (lst)
-	{
-		if (!lst->next)
-			return (out);
-		out = lst;
-		lst = lst->next;
-	}
-	return (0);
-}
-
-static void	operator(t_list **list)
-{
-	t_list	*tmp;
-
-	if (!(*list)->next)
+	if (!container[type]->head || !container[type]->head->next)
 		return ;
-	tmp = list_penultimate(*list);
-	tmp->next->next = *list;
-	*list = tmp->next;
-	tmp->next = NULL;
+	tmp = container[type]->tail;
+	container[type]->tail = tmp->prev;
+	container[type]->tail->next = NULL;
+	tmp->next = container[type]->head;
+	container[type]->head->prev = tmp;
+	tmp->prev = NULL;
+	container[type]->head = tmp;
 }
 
-void	reverse_rotate(t_list **list, t_type type, bool print)
+void	reverse_rotate(t_container **container, t_type type, bool print)
 {
 	if (type == A)
 	{
-		operator(&list[A]);
+		operator(container, A);
 		if (print)
 			ft_putendl_fd("rra", 1);
 	}
 	else if (type == B)
 	{
-		operator(&list[B]);
+		operator(container, B);
 		if (print)
 			ft_putendl_fd("rrb", 1);
 	}
 	else if (type == BOTH)
 	{
-		operator(&list[A]);
-		operator(&list[B]);
+		operator(container, A);
+		operator(container, B);
 		if (print)
 			ft_putendl_fd("rrr", 1);
 	}

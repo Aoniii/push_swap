@@ -43,21 +43,19 @@ static int	count_rotate(t_rotate rotate)
 	return (i + rotate.ra + rotate.rb + rotate.rra + rotate.rrb);
 }
 
-static int	next(int x, t_list *list)
+static int	next(int x, t_stack *stack, int size)
 {
 	bool	found;
 	int		i;
 	int		next;
-	int		size;
 	int		tmp;
 
 	found = 0;
 	i = 0;
 	next = 2147483647;
-	size = ft_lstsize(list);
 	while (i < size)
 	{
-		tmp = get_at_index(list, i);
+		tmp = get_at_index(stack, i);
 		if (tmp > x && tmp < next)
 		{
 			next = tmp;
@@ -66,20 +64,18 @@ static int	next(int x, t_list *list)
 		i++;
 	}
 	if (!found)
-		next = get_min_value(list);
+		next = get_min_value(stack);
 	return (next);
 }
 
-static t_rotate	smart_calc(t_list *list, int next, t_rotate rotate)
+static t_rotate	smart_calc(t_stack *stack, int next, t_rotate rotate, int size)
 {
 	int	i;
-	int	size;
 
 	i = 0;
-	size = ft_lstsize(list);
-	while (*((int *)(list->content)) != next)
+	while (*((int *)(stack->content)) != next)
 	{
-		list = list->next;
+		stack = stack->next;
 		i++;
 	}
 	if (i <= size - i)
@@ -89,16 +85,15 @@ static t_rotate	smart_calc(t_list *list, int next, t_rotate rotate)
 	return (rotate);
 }
 
-t_rotate	calculate(t_list **list)
+t_rotate	calculate(t_container **container)
 {
 	t_rotate	rotate;
 	t_rotate	rotate_tmp;
 	int			i;
 	int			size;
-	int			n;
 
 	i = 0;
-	size = ft_lstsize(list[B]);
+	size = container[B]->size;
 	while (i < size)
 	{
 		rotate_tmp = init_rotate();
@@ -106,8 +101,9 @@ t_rotate	calculate(t_list **list)
 			rotate_tmp.rb = i;
 		else
 			rotate_tmp.rrb = size - i;
-		n = next(get_at_index(list[B], i), list[A]);
-		rotate_tmp = smart_calc(list[A], n, rotate_tmp);
+		rotate_tmp = smart_calc(container[A]->head, \
+			next(get_at_index(container[B]->head, i), container[A]->head, \
+			container[A]->size), rotate_tmp, container[A]->size);
 		if (i == 0 || count_rotate(rotate) > count_rotate(rotate_tmp))
 			rotate = rotate_tmp;
 		if (count_rotate(rotate) <= 1)

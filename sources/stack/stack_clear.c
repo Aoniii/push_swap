@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pushswap_bonus.h                                   :+:      :+:    :+:   */
+/*   stack_clear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: snourry <snourry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/12 11:59:02 by snourry           #+#    #+#             */
-/*   Updated: 2025/05/12 11:59:02 by snourry          ###   ########.fr       */
+/*   Created: 2025/05/13 11:51:25 by snourry           #+#    #+#             */
+/*   Updated: 2025/05/13 11:51:25 by snourry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSHSWAP_BONUS_H
-# define PUSHSWAP_BONUS_H
+#include "pushswap.h"
 
-# include "pushswap.h"
-
-typedef struct s_instruction
+void	stack_clear(t_stack **lst, void (*del) (void*))
 {
-	void	((*f)(t_container **, t_type, bool));
-	t_type	type;
-	char	*code;
-}	t_instruction;
+	t_stack	*l;
 
-void	checker(t_container **container);
-
-#endif
+	if (*lst)
+	{
+		while (*lst)
+		{
+			l = (*lst)->next;
+			stack_delone(*lst, del);
+			*lst = l;
+		}
+		*lst = 0;
+	}
+}

@@ -32,24 +32,42 @@ typedef struct s_rotate
 	int	rrb;
 }	t_rotate;
 
-t_list		*args(char **argv);
-void		swap(t_list **list, t_type type, bool print);
-void		push(t_list **list, t_type type, bool print);
-void		rotate(t_list **list, t_type type, bool print);
-void		reverse_rotate(t_list **list, t_type type, bool print);
-void		sort(t_list **list);
-void		sort_five(t_list **list);
-void		sort_big(t_list **list);
+typedef struct s_stack
+{
+	void			*content;
+	struct s_stack	*next;
+	struct s_stack	*prev;
+}					t_stack;
+
+typedef struct s_container
+{
+	t_stack	*head;
+	t_stack	*tail;
+	int		size;
+}			t_container;
+
+t_container	*args(char **argv);
+t_container	*creat(char **argv);
+void		swap(t_container **container, t_type type, bool print);
+void		push(t_container **container, t_type type, bool print);
+void		rotate(t_container **container, t_type type, bool print);
+void		reverse_rotate(t_container **container, t_type type, bool print);
+void		sort(t_container **container);
+void		sort_five(t_container **container);
+void		sort_big(t_container **container);
 void		free_argv(char **argv);
-bool		is_sorted(t_list **list);
-int			get_max_value(t_list *list);
-int			get_min_value(t_list *list);
-int			get_at_index(t_list *list, int index);
-int			find_min(t_list *list, int min);
-int			find_max(t_list *list, int max);
-int			identify_bottom(t_list *list, int bottom);
-int			identify_top(t_list *list, int top);
-int			get_median(t_list **list);
-t_rotate	calculate(t_list **list);
+bool		is_sorted(t_container **container);
+int			get_max_value(t_stack *stack);
+int			get_min_value(t_stack *stack);
+int			get_at_index(t_stack *stack, int index);
+int			find_min(t_stack *stack, int min);
+int			find_max(t_stack *stack, int max);
+int			identify_bottom(t_stack *stack, int bottom);
+int			identify_top(t_stack *stack, int top);
+int			get_median(t_container **container);
+t_rotate	calculate(t_container **container);
+void		stack_clear(t_stack **lst, void (*del) (void*));
+void		stack_delone(t_stack *lst, void (*del) (void*));
+t_stack		*stack_new(void *content);
 
 #endif

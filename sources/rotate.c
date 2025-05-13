@@ -12,36 +12,39 @@
 
 #include "pushswap.h"
 
-static void	operator(t_list **list)
+static void	operator(t_container **container, t_type type)
 {
-	t_list	*tmp;
+	t_stack	*tmp;
 
-	if (!(*list)->next)
+	if (!container[type]->head || !container[type]->head->next)
 		return ;
-	tmp = *list;
-	*list = (*list)->next;
-	tmp->next = NULL;
-	ft_lstlast(*list)->next = tmp;
+	tmp = container[type]->head;
+	container[type]->head = tmp->next;
+	container[type]->head->prev = NULL;
+	container[type]->tail->next = tmp;
+	tmp->prev = container[type]->tail;
+	container[type]->tail = tmp;
+	container[type]->tail->next = NULL;
 }
 
-void	rotate(t_list **list, t_type type, bool print)
+void	rotate(t_container **container, t_type type, bool print)
 {
 	if (type == A)
 	{
-		operator(&list[A]);
+		operator(container, A);
 		if (print)
 			ft_putendl_fd("ra", 1);
 	}
 	else if (type == B)
 	{
-		operator(&list[B]);
+		operator(container, B);
 		if (print)
 			ft_putendl_fd("rb", 1);
 	}
 	else if (type == BOTH)
 	{
-		operator(&list[A]);
-		operator(&list[B]);
+		operator(container, A);
+		operator(container, B);
 		if (print)
 			ft_putendl_fd("rr", 1);
 	}

@@ -27,61 +27,61 @@ void	free_argv(char **argv)
 	argv = NULL;
 }
 
-bool	is_sorted(t_list **list)
+bool	is_sorted(t_container **container)
 {
-	t_list	*tmp;
+	t_stack	*tmp;
 
-	tmp = list[A];
-	if (list[B] != NULL)
-		return (0);
+	tmp = container[A]->head;
+	if (container[B]->head != NULL)
+		return (false);
 	while (tmp->next)
 	{
 		if (*((int *)(tmp->content)) > *((int *)(tmp->next->content)))
-			return (0);
+			return (false);
 		tmp = tmp->next;
 	}
-	return (1);
+	return (true);
 }
 
-int	get_max_value(t_list *list)
+int	get_max_value(t_stack *stack)
 {
 	int	out;
 
-	out = *((int *)(list->content));
-	list = list->next;
-	while (list)
+	out = *((int *)(stack->content));
+	stack = stack->next;
+	while (stack)
 	{
-		if (*((int *)(list->content)) > out)
-			out = *((int *)(list->content));
-		list = list->next;
+		if (*((int *)(stack->content)) > out)
+			out = *((int *)(stack->content));
+		stack = stack->next;
 	}
 	return (out);
 }
 
-int	get_min_value(t_list *list)
+int	get_min_value(t_stack *stack)
 {
 	int	out;
 
-	out = *((int *)(list->content));
-	list = list->next;
-	while (list)
+	out = *((int *)(stack->content));
+	stack = stack->next;
+	while (stack)
 	{
-		if (*((int *)(list->content)) < out)
-			out = *((int *)(list->content));
-		list = list->next;
+		if (*((int *)(stack->content)) < out)
+			out = *((int *)(stack->content));
+		stack = stack->next;
 	}
 	return (out);
 }
 
-int	get_at_index(t_list *list, int index)
+int	get_at_index(t_stack *stack, int index)
 {
 	int	i;
 
 	i = 0;
 	while (i < index)
 	{
-		list = list->next;
+		stack = stack->next;
 		i++;
 	}
-	return (*((int *)(list->content)));
+	return (*((int *)(stack->content)));
 }

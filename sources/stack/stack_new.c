@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pushswap_bonus.h                                   :+:      :+:    :+:   */
+/*   stack_new.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: snourry <snourry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/12 11:59:02 by snourry           #+#    #+#             */
-/*   Updated: 2025/05/12 11:59:02 by snourry          ###   ########.fr       */
+/*   Created: 2025/05/13 11:52:33 by snourry           #+#    #+#             */
+/*   Updated: 2025/05/13 11:52:33 by snourry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSHSWAP_BONUS_H
-# define PUSHSWAP_BONUS_H
+#include "pushswap.h"
 
-# include "pushswap.h"
-
-typedef struct s_instruction
+t_stack	*stack_new(void *content)
 {
-	void	((*f)(t_container **, t_type, bool));
-	t_type	type;
-	char	*code;
-}	t_instruction;
+	t_stack	*list;
 
-void	checker(t_container **container);
-
-#endif
+	list = malloc(sizeof(t_stack));
+	if (!list)
+		return (NULL);
+	list->content = content;
+	list->next = 0;
+	return (list);
+}

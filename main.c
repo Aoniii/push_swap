@@ -12,35 +12,54 @@
 
 #include "pushswap.h"
 
-void	cleanup(t_list **list)
+static void	cleanup(t_container **container)
 {
-	if (list && list[A])
-		ft_lstclear(&list[A], &free);
-	free(list);
-	list = NULL;
+	if (container)
+	{
+		if (container[A])
+			stack_clear(&container[A]->head, free);
+		if (container[B])
+			stack_clear(&container[B]->head, free);
+		free(container[A]);
+		free(container[B]);
+		free(container);
+	}
+}
+
+static bool	init_stack_b(t_container **container)
+{
+	container[B] = malloc(sizeof(t_container));
+	if (!container[B])
+		return (false);
+	container[B]->head = NULL;
+	container[B]->tail = NULL;
+	container[B]->size = 0;
+	return (true);
 }
 
 int	main(int argc, char **argv)
 {
-	t_list	**list;
+	t_container	**container;
 
-	list = malloc(sizeof(t_list *) * 2);
-	if (!list || argc == 1)
+	if (argc == 1)
 	{
-		free(list);
-		list = NULL;
 		ft_putstr_fd("Error\n", 2);
 		return (1);
 	}
-	list[A] = args(&argv[1]);
-	if (!list[A])
+	container = malloc(sizeof(t_container *) * 2);
+	if (!container)
 	{
-		cleanup(list);
 		ft_putstr_fd("Error\n", 2);
 		return (1);
 	}
-	list[B] = NULL;
-	sort(list);
-	cleanup(list);
+	container[A] = args(&argv[1]);
+	if (!container[A] || !init_stack_b(container))
+	{
+		cleanup(container);
+		ft_putstr_fd("Error\n", 2);
+		return (1);
+	}
+	sort(container);
+	cleanup(container);
 	return (0);
 }

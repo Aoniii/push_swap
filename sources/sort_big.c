@@ -12,92 +12,93 @@
 
 #include "pushswap.h"
 
-static void	push_median(t_list **list, int median)
+static void	push_median(t_container **container, int median)
 {
-	t_list	*lst;
+	t_stack	*stack;
 	int		i;
 
 	i = 0;
-	lst = list[A];
-	while (*((int *)(lst->content)) != median)
+	stack = container[A]->head;
+	while (*((int *)(stack->content)) != median)
 	{
-		lst = lst->next;
+		stack = stack->next;
 		i++;
 	}
-	if (i <= ft_lstsize(list[A]) - i)
+	if (i <= container[A]->size - i)
 		while (i--)
-			rotate(list, A, 1);
+			rotate(container, A, 1);
 	else
 	{
-		i = ft_lstsize(list[A]) - i;
+		i = container[A]->size - i;
 		while (i--)
-			reverse_rotate(list, A, 1);
+			reverse_rotate(container, A, 1);
 	}
-	push(list, B, 1);
+	push(container, B, 1);
 }
 
-static void	push_b(t_list **list, int median)
+static void	push_b(t_container **container, int median)
 {
 	int	max;
 	int	size;
 
-	max = identify_top(list[A], 5);
-	size = ft_lstsize(list[A]);
+	max = identify_top(container[A]->head, 5);
+	size = container[A]->size;
 	while (size > 5)
 	{
-		if (*((int *)(list[A]->content)) < max)
+		if (*((int *)(container[A]->head->content)) < max)
 		{
-			push(list, B, 1);
+			push(container, B, 1);
 			size--;
-			if (*((int *)(list[B]->content)) > median)
+			if (*((int *)(container[B]->head->content)) > median)
 			{
-				if (*((int *)(list[A]->content)) >= max && list[A]->next)
-					rotate(list, BOTH, 1);
+				if (*((int *)(container[A]->head->content)) >= max && \
+				container[A]->head->next)
+					rotate(container, BOTH, 1);
 				else
-					rotate(list, B, 1);
+					rotate(container, B, 1);
 			}
 		}
 		else
-			rotate(list, A, 1);
+			rotate(container, A, 1);
 	}
 }
 
-static void	apply(t_list **list, t_rotate r)
+static void	apply(t_container **container, t_rotate r)
 {
 	while (r.ra > 0 && r.rb > 0)
 	{
 		r.ra--;
 		r.rb--;
-		rotate(list, BOTH, 1);
+		rotate(container, BOTH, 1);
 	}
 	while (r.rra > 0 && r.rrb > 0)
 	{
 		r.rra--;
 		r.rrb--;
-		reverse_rotate(list, BOTH, 1);
+		reverse_rotate(container, BOTH, 1);
 	}
 	while (r.ra--)
-		rotate(list, A, 1);
+		rotate(container, A, 1);
 	while (r.rb--)
-		rotate(list, B, 1);
+		rotate(container, B, 1);
 	while (r.rra--)
-		reverse_rotate(list, A, 1);
+		reverse_rotate(container, A, 1);
 	while (r.rrb--)
-		reverse_rotate(list, B, 1);
-	push(list, A, 1);
+		reverse_rotate(container, B, 1);
+	push(container, A, 1);
 }
 
-static void	set_first(t_list **list)
+static void	set_first(t_container **container)
 {
-	t_list	*tmp;
+	t_stack	*tmp;
 	int		i;
 	int		min;
 	int		size;
 
-	tmp = list[A];
+	tmp = container[A]->head;
 	i = 0;
 	min = get_min_value(tmp);
-	size = ft_lstsize(tmp);
+	size = container[A]->size;
 	while (*((int *)(tmp->content)) != min)
 	{
 		tmp = tmp->next;
@@ -106,27 +107,27 @@ static void	set_first(t_list **list)
 	if (i <= size - i)
 	{
 		while (i--)
-			rotate(list, A, 1);
+			rotate(container, A, 1);
 		return ;
 	}
 	i = size - i;
 	while (i--)
-		reverse_rotate(list, A, 1);
+		reverse_rotate(container, A, 1);
 }
 
-void	sort_big(t_list **list)
+void	sort_big(t_container **container)
 {
 	t_rotate	rotate;
 	int			median;
 
-	median = get_median(list);
-	push_median(list, median);
-	push_b(list, median);
-	sort_five(list);
-	while (list[B])
+	median = get_median(container);
+	push_median(container, median);
+	push_b(container, median);
+	sort_five(container);
+	while (container[B]->head)
 	{
-		rotate = calculate(list);
-		apply(list, rotate);
+		rotate = calculate(container);
+		apply(container, rotate);
 	}
-	set_first(list);
+	set_first(container);
 }
