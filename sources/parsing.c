@@ -6,7 +6,7 @@
 /*   By: snourry <snourry@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 21:52:31 by snourry           #+#    #+#             */
-/*   Updated: 2024/05/26 21:52:31 by snourry          ###   ########.fr       */
+/*   Updated: 2025/06/03 13:08:39 by snourry          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ static bool	check(char *s)
 		index++;
 	}
 	if (s[0] == '-' && (index > 11 || \
-		(index == 11 && ft_strncmp("-2147483648", s, 20) < 0)))
+(index == 11 && ft_strncmp("-2147483648", s, 20) < 0)))
 		return (0);
 	if (s[0] != '-' && (index > 10 || \
-		(index == 10 && ft_strncmp("2147483647", s, 20) < 0)))
+(index == 10 && ft_strncmp("2147483647", s, 20) < 0)))
 		return (0);
 	return (1);
 }
