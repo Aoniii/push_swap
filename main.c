@@ -24,8 +24,10 @@ int	main(int argc, char **argv)
 {
 	t_list	**list;
 
+	if (argc == 1)
+		return (0);
 	list = malloc(sizeof(t_list *) * 2);
-	if (!list || argc == 1)
+	if (!list)
 	{
 		free(list);
 		list = NULL;
