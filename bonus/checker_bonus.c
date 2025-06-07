@@ -41,6 +41,14 @@ static int	do_instruction(char *line, t_list **list)
 	return (0);
 }
 
+static int	double_ctrl_d(t_list **list, char *line)
+{
+	if (line && *line)
+		if (do_instruction(line, list) == 0)
+			return (2);
+	return (1);
+}
+
 static int	loop(t_list **list, char **line, char **tmp, int *res)
 {
 	char	buffer[2];
@@ -48,7 +56,7 @@ static int	loop(t_list **list, char **line, char **tmp, int *res)
 	*res = read(0, buffer, 1);
 	buffer[*res] = '\0';
 	if (*res == 0)
-		return (1);
+		return (double_ctrl_d(list, *line));
 	else if (buffer[0] != '\n')
 	{
 		*tmp = ft_strjoin(*line, buffer);
@@ -82,19 +90,16 @@ void	checker(t_list **list)
 	while (res > 0)
 	{
 		ret = loop(list, &line, &tmp, &res);
-		if (ret == 1)
-			break ;
-		else if (ret == 2)
-		{
+		if (ret == 2)
 			ft_putendl_fd("Error", 2);
-			return ;
-		}
+		if (ret > 0)
+			break ;
 	}
 	if (line)
 		free(line);
 	line = NULL;
-	if (is_sorted(list))
+	if (is_sorted(list) && ret != 2)
 		ft_putendl_fd("OK", 1);
-	else
+	else if (ret != 2)
 		ft_putendl_fd("KO", 1);
 }
