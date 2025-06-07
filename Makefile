@@ -19,8 +19,6 @@ SRCS_BONUS		=	main_bonus.c \
 					sources/reverse_rotate.c \
 					sources/utils.c \
 					sources/utils2.c \
-					get_next_line/get_next_line_bonus.c \
-					get_next_line/get_next_line_utils_bonus.c \
 					bonus/checker_bonus.c
 OBJS			=	$(SRCS:.c=.o)
 OBJS_BONUS		=	$(SRCS_BONUS:.c=.o)
@@ -28,7 +26,6 @@ OBJS_DIR 		=	objects
 OBJS_PATH		=	$(addprefix $(OBJS_DIR)/, $(OBJS))
 OBJS_PATH_BONUS	=	$(addprefix $(OBJS_DIR)/, $(OBJS_BONUS))
 LIBFT			=	libft
-GNL				=	get_next_line
 CC				=	gcc
 CFLAGS			=	-Wall -Wextra -Werror -I. -I$(LIBFT) -L$(LIBFT) -lft
 

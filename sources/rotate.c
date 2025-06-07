@@ -16,7 +16,7 @@ static void	operator(t_list **list)
 {
 	t_list	*tmp;
 
-	if (!(*list)->next)
+	if (!(*list) || !(*list)->next)
 		return ;
 	tmp = *list;
 	*list = (*list)->next;

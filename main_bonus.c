@@ -12,12 +12,12 @@
 
 #include "pushswap_bonus.h"
 
-void	checker(t_list **list);
-
 void	cleanup(t_list **list)
 {
 	if (list && list[A])
 		ft_lstclear(&list[A], &free);
+	if (list && list[B])
+		ft_lstclear(&list[B], &free);
 	free(list);
 	list = NULL;
 }

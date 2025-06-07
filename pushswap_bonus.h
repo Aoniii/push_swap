@@ -22,4 +22,6 @@ typedef struct s_instruction
 	char	*code;
 }	t_instruction;
 
+void	checker(t_list **list);
+
 #endif

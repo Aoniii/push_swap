@@ -12,23 +12,21 @@
 
 #include "pushswap_bonus.h"
 
-char	*get_next_line(int fd);
-
 static int	do_instruction(char *line, t_list **list)
 {
 	int							i;
 	static const t_instruction	instruction[] = {
-	{&swap, A, "sa\n"},
-	{&swap, B, "sb\n"},
-	{&swap, BOTH, "ss\n"},
-	{&push, A, "pa\n"},
-	{&push, B, "pb\n"},
-	{&rotate, A, "ra\n"},
-	{&rotate, B, "rb\n"},
-	{&rotate, BOTH, "rr\n"},
-	{&reverse_rotate, A, "rra\n"},
-	{&reverse_rotate, B, "rrb\n"},
-	{&reverse_rotate, BOTH, "rrr\n"}};
+	{&swap, A, "sa"},
+	{&swap, B, "sb"},
+	{&swap, BOTH, "ss"},
+	{&push, A, "pa"},
+	{&push, B, "pb"},
+	{&rotate, A, "ra"},
+	{&rotate, B, "rb"},
+	{&rotate, BOTH, "rr"},
+	{&reverse_rotate, A, "rra"},
+	{&reverse_rotate, B, "rrb"},
+	{&reverse_rotate, BOTH, "rrr"}};
 
 	i = 0;
 	while (i < 11)
@@ -46,25 +44,41 @@ static int	do_instruction(char *line, t_list **list)
 void	checker(t_list **list)
 {
 	char	*line;
+	char	*tmp;
+	char	buffer[2];
+	int		res;
 
-	line = get_next_line(0);
-	if (!line)
-		return ;
-	while (line)
+	res = 1;
+	line = NULL;
+	while (res > 0)
 	{
-		if (do_instruction(line, list) == 0)
+		res = read(0, buffer, 1);
+		buffer[res] = '\0';
+		if (res == 0)
+			break ;
+		else if (buffer[0] != '\n')
 		{
-			while (line)
+			tmp = ft_strjoin(line, buffer);
+			if (line)
+				free(line);
+			line = tmp;
+		}
+		else
+		{
+			if (do_instruction(line, list) == 0)
 			{
 				free(line);
-				line = get_next_line(0);
+				line = NULL;
+				ft_putendl_fd("Error", 2);
+				return ;
 			}
-			ft_putendl_fd("KO", 1);
-			return ;
+			free(line);
+			line = NULL;
 		}
-		free(line);
-		line = get_next_line(0);
 	}
+	if (line)
+		free(line);
+	line = NULL;
 	if (is_sorted(list))
 		ft_putendl_fd("OK", 1);
 	else
