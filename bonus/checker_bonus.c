@@ -12,6 +12,10 @@
 
 #include "pushswap_bonus.h"
 
+/*
+*	Do the instruction
+*	Return 1 if the instruction is valid, 0 otherwise
+*/
 static int	do_instruction(char *line, t_list **list)
 {
 	int							i;
@@ -41,6 +45,15 @@ static int	do_instruction(char *line, t_list **list)
 	return (0);
 }
 
+/*
+*	This is only if user double Ctrl+D for leave the terminal
+*	for Free the line
+*
+*	Return:
+*	1 if the instruction is valid,
+*	2 if the instruction is not valid, (Error)
+*	0 otherwise
+*/
 static int	double_ctrl_d(t_list **list, char *line)
 {
 	if (line && *line)
@@ -49,6 +62,15 @@ static int	double_ctrl_d(t_list **list, char *line)
 	return (1);
 }
 
+/*
+*	Necessary for the Norminette
+*	Loop for read the instruction
+*
+*	Return:
+*	1 if the instruction is valid,
+*	2 if the instruction is not valid, (Error)
+*	0 otherwise
+*/
 static int	loop(t_list **list, char **line, char **tmp, int *res)
 {
 	char	buffer[2];
@@ -78,6 +100,9 @@ static int	loop(t_list **list, char **line, char **tmp, int *res)
 	return (0);
 }
 
+/*
+*	Main function for the checker
+*/
 void	checker(t_list **list)
 {
 	char	*line;

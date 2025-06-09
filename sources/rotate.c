@@ -12,6 +12,10 @@
 
 #include "pushswap.h"
 
+/*
+*	Operator for the rotate
+*	Return the list
+*/
 static void	operator(t_list **list)
 {
 	t_list	*tmp;
@@ -24,6 +28,10 @@ static void	operator(t_list **list)
 	ft_lstlast(*list)->next = tmp;
 }
 
+/*
+*	Rotate the stack
+*	Return the list
+*/
 void	rotate(t_list **list, t_type type, bool print)
 {
 	if (type == A)

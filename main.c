@@ -12,6 +12,9 @@
 
 #include "pushswap.h"
 
+/*
+*	Free the list and set it to NULL
+*/
 void	cleanup(t_list **list)
 {
 	if (list && list[A])

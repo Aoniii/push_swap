@@ -12,6 +12,10 @@
 
 #include "pushswap.h"
 
+/*
+*	Operator for the push
+*	Return the list
+*/
 static void	operator(t_list **list, t_type src, t_type dest)
 {
 	t_list	*tmp;
@@ -24,6 +28,10 @@ static void	operator(t_list **list, t_type src, t_type dest)
 	list[dest] = tmp;
 }
 
+/*
+*	Push the first element of the source stack to the destination stack
+*	Return the list
+*/
 void	push(t_list **list, t_type type, bool print)
 {
 	if (type == A)

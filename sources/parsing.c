@@ -12,6 +12,16 @@
 
 #include <pushswap.h>
 
+/*
+*	Check if the string is a valid integer
+*	Return 1 if the string is a valid integer, 0 otherwise
+*
+*	Valid integer only:
+*	-2147483648 to 2147483647
+*
+*	Invalid integer:
+*	01, -01, +1
+*/
 static bool	check(char *s)
 {
 	int	index;
@@ -38,6 +48,10 @@ static bool	check(char *s)
 	return (1);
 }
 
+/*
+*	Check if the list has duplicate values
+*	Return 1 if the list has duplicate values, 0 otherwise
+*/
 static bool	duplicate(char **argv)
 {
 	int	index;
@@ -56,6 +70,10 @@ static bool	duplicate(char **argv)
 	return (1);
 }
 
+/*
+*	Check if the list has only one argument
+*	Return 1 if the list has only one argument, 0 otherwise
+*/
 static char	**single_arg(char **argv, bool *b)
 {
 	if (ft_strrchr(argv[0], ' ') != NULL && argv[1] == NULL)
@@ -67,6 +85,9 @@ static char	**single_arg(char **argv, bool *b)
 	return (argv);
 }
 
+/*
+*	Create and Return the list
+*/
 static t_list	*creat(char **argv)
 {
 	t_list	*list;
@@ -90,6 +111,10 @@ static t_list	*creat(char **argv)
 	return (list);
 }
 
+/*
+*	Main function for the parsing
+*	Return the list
+*/
 t_list	*args(char **argv)
 {
 	t_list	*list;

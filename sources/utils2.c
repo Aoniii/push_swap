@@ -12,6 +12,10 @@
 
 #include "pushswap.h"
 
+/*
+*	Find the min value of the list
+*	Return the min value
+*/
 int	find_min(t_list *list, int min)
 {
 	int	out;
@@ -26,6 +30,10 @@ int	find_min(t_list *list, int min)
 	return (out);
 }
 
+/*
+*	Find the max value of the list
+*	Return the max value
+*/
 int	find_max(t_list *list, int max)
 {
 	int	out;
@@ -40,6 +48,10 @@ int	find_max(t_list *list, int max)
 	return (out);
 }
 
+/*
+*	Identify the bottom value of the list
+*	Return the bottom value
+*/
 int	identify_bottom(t_list *list, int bottom)
 {
 	int	prev;
@@ -55,6 +67,10 @@ int	identify_bottom(t_list *list, int bottom)
 	return (prev);
 }
 
+/*
+*	Identify the top value of the list
+*	Return the top value
+*/
 int	identify_top(t_list *list, int top)
 {
 	int	prev;
@@ -70,6 +86,10 @@ int	identify_top(t_list *list, int top)
 	return (prev);
 }
 
+/*
+*	Get the median value of the list
+*	Return the median value
+*/
 int	get_median(t_list **list)
 {
 	int	prev;

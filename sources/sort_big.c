@@ -12,6 +12,9 @@
 
 #include "pushswap.h"
 
+/*
+*	Push the median value to the B stack
+*/
 static void	push_median(t_list **list, int median)
 {
 	t_list	*lst;
@@ -36,6 +39,9 @@ static void	push_median(t_list **list, int median)
 	push(list, B, 1);
 }
 
+/*
+*	Push all values that are not in the top 5 values to the B stack
+*/
 static void	push_b(t_list **list, int median)
 {
 	int	max;
@@ -62,6 +68,9 @@ static void	push_b(t_list **list, int median)
 	}
 }
 
+/*
+*	Apply the rotate to the list
+*/
 static void	apply(t_list **list, t_rotate r)
 {
 	while (r.ra > 0 && r.rb > 0)
@@ -87,6 +96,9 @@ static void	apply(t_list **list, t_rotate r)
 	push(list, A, 1);
 }
 
+/*
+*	Set the smaller element of the list to the top
+*/
 static void	set_first(t_list **list)
 {
 	t_list	*tmp;
@@ -114,6 +126,17 @@ static void	set_first(t_list **list)
 		reverse_rotate(list, A, 1);
 }
 
+/*
+*	Main function for the big part
+*	Sort the list
+*
+*	1. Push the median value to the B stack
+*	2. Push all values that are not in the top 5 values to the B stack
+*	3. Sort the list A of five elements
+*	4. For each element in the B stack, calculate the rotate to the list
+*	5. Apply the rotate to the list
+*	6. Set the smaller element of the list to the top
+*/
 void	sort_big(t_list **list)
 {
 	t_rotate	rotate;

@@ -12,6 +12,9 @@
 
 #include "pushswap.h"
 
+/*
+*	Sort the list of three elements
+*/
 static void	sort_three(t_list **list)
 {
 	if (*((int *)(list[A]->content)) > *((int *)(list[A]->next->content)))
@@ -22,6 +25,9 @@ static void	sort_three(t_list **list)
 		swap(list, A, 1);
 }
 
+/*
+*	Sort the list of four elements
+*/
 static void	sort_four(t_list **list)
 {
 	while (*((int *)(list[A]->content)) != get_min_value(list[A]))
@@ -31,6 +37,9 @@ static void	sort_four(t_list **list)
 	push(list, A, 1);
 }
 
+/*
+*	Sort the list of five elements
+*/
 void	sort_five(t_list **list)
 {
 	int	min;
@@ -45,6 +54,10 @@ void	sort_five(t_list **list)
 		swap(list, A, 1);
 }
 
+/*
+*	Main fonction for the mandatory part
+*	Sort the list
+*/
 void	sort(t_list **list)
 {
 	int	size;

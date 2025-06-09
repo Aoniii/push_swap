@@ -12,6 +12,9 @@
 
 #include "pushswap.h"
 
+/*
+*	Return the penultimate element
+*/
 static t_list	*list_penultimate(t_list *lst)
 {
 	t_list	*out;
@@ -26,6 +29,10 @@ static t_list	*list_penultimate(t_list *lst)
 	return (0);
 }
 
+/*
+*	Operator for the reverse rotate
+*	Return the list
+*/
 static void	operator(t_list **list)
 {
 	t_list	*tmp;
@@ -38,6 +45,10 @@ static void	operator(t_list **list)
 	tmp->next = NULL;
 }
 
+/*
+*	Reverse rotate the stack
+*	Return the list
+*/
 void	reverse_rotate(t_list **list, t_type type, bool print)
 {
 	if (type == A)

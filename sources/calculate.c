@@ -12,6 +12,9 @@
 
 #include "pushswap.h"
 
+/*
+*	Initialize the rotate
+*/
 static t_rotate	init_rotate(void)
 {
 	t_rotate	rotate;
@@ -23,6 +26,9 @@ static t_rotate	init_rotate(void)
 	return (rotate);
 }
 
+/*
+*	Count the number of rotate
+*/
 static int	count_rotate(t_rotate rotate)
 {
 	int	i;
@@ -43,6 +49,9 @@ static int	count_rotate(t_rotate rotate)
 	return (i + rotate.ra + rotate.rb + rotate.rra + rotate.rrb);
 }
 
+/*
+*	Get the next value of the list
+*/
 static int	next(int x, t_list *list)
 {
 	bool	found;
@@ -70,6 +79,9 @@ static int	next(int x, t_list *list)
 	return (next);
 }
 
+/*
+*	Calculate the rotate to the list
+*/
 static t_rotate	smart_calc(t_list *list, int next, t_rotate rotate)
 {
 	int	i;
@@ -89,6 +101,11 @@ static t_rotate	smart_calc(t_list *list, int next, t_rotate rotate)
 	return (rotate);
 }
 
+/*
+*	Calculate the rotate to the list
+*	The code are slow because he try multiple rotate possibilities
+*	Return the rotate
+*/
 t_rotate	calculate(t_list **list)
 {
 	t_rotate	rotate;
