@@ -55,28 +55,26 @@ static int	count_rotate(t_rotate rotate)
 static int	next(int x, t_list *list)
 {
 	bool	found;
-	int		i;
-	int		next;
-	int		size;
+	int		n;
 	int		tmp;
+	t_list	*cur;
 
 	found = 0;
-	i = 0;
-	next = 2147483647;
-	size = ft_lstsize(list);
-	while (i < size)
+	n = 2147483647;
+	cur = list;
+	while (cur)
 	{
-		tmp = get_at_index(list, i);
-		if (tmp > x && tmp < next)
+		tmp = *((int *)(cur->content));
+		if (tmp > x && tmp < n)
 		{
-			next = tmp;
+			n = tmp;
 			found = 1;
 		}
-		i++;
+		cur = cur->next;
 	}
 	if (!found)
-		next = get_min_value(list);
-	return (next);
+		n = get_min_value(list);
+	return (n);
 }
 
 /*
