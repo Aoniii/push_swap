@@ -15,7 +15,6 @@
 
 # include "libft.h"
 # include <stdbool.h>
-# include <stdio.h>
 
 typedef enum e_type
 {

@@ -26,7 +26,7 @@ OBJS_DIR 		=	objects
 OBJS_PATH		=	$(addprefix $(OBJS_DIR)/, $(OBJS))
 OBJS_PATH_BONUS	=	$(addprefix $(OBJS_DIR)/, $(OBJS_BONUS))
 LIBFT			=	libft
-CC				=	gcc
+CC				=	cc
 CFLAGS			=	-Wall -Wextra -Werror -I. -I$(LIBFT) -L$(LIBFT) -lft
 
 $(OBJS_DIR)/%.o: %.c

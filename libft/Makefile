@@ -47,7 +47,7 @@ SRCS = ft_isalpha.c \
 
 OBJS	= ${SRCS:.c=.o}
 CFLAGS	= -Wall -Wextra -Werror -I includes
-CC		= gcc
+CC		= cc
 
 ${NAME}: ${OBJS}
 	ar rcs $@ $^
