@@ -50,5 +50,9 @@ int			identify_bottom(t_list *list, int bottom);
 int			identify_top(t_list *list, int top);
 int			get_median(t_list **list);
 t_rotate	calculate(t_list **list);
+t_rotate	init_rotate(void);
+int			count_rotate(t_rotate rotate);
+t_list		*create_node(char *arg, t_list **list);
+t_list		*creat(char **argv);
 
 #endif

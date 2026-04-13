@@ -13,42 +13,6 @@
 #include <pushswap.h>
 
 /*
-*	Check if the string is a valid integer
-*	Return 1 if the string is a valid integer, 0 otherwise
-*
-*	Valid integer only:
-*	-2147483648 to 2147483647
-*
-*	Invalid integer:
-*	01, -01, +1
-*/
-static bool	check(char *s)
-{
-	int	index;
-
-	index = 0;
-	if (!s || !s[0])
-		return (0);
-	if (s[0] == '-' && s[1] != 0)
-		index++;
-	if (s[index] == '0' && (index != 0 || s[index + 1] != 0))
-		return (0);
-	while (s[index])
-	{
-		if (!ft_isdigit(s[index]))
-			return (0);
-		index++;
-	}
-	if (s[0] == '-' && (index > 11 || \
-(index == 11 && ft_strncmp("-2147483648", s, 20) < 0)))
-		return (0);
-	if (s[0] != '-' && (index > 10 || \
-(index == 10 && ft_strncmp("2147483647", s, 20) < 0)))
-		return (0);
-	return (1);
-}
-
-/*
 *	Check if the list has duplicate values
 *	Return 1 if the list has duplicate values, 0 otherwise
 */
@@ -83,32 +47,6 @@ static char	**single_arg(char **argv, bool *b)
 	}
 	*b = 0;
 	return (argv);
-}
-
-/*
-*	Create and Return the list
-*/
-static t_list	*creat(char **argv)
-{
-	t_list	*list;
-	int		*nb;
-
-	list = NULL;
-	while (*argv)
-	{
-		nb = malloc(sizeof(int));
-		if (!nb || !check(*argv))
-		{
-			free(nb);
-			nb = NULL;
-			ft_lstclear(&list, &free);
-			return (NULL);
-		}
-		*nb = ft_atoi(*argv);
-		ft_lstadd_back(&list, ft_lstnew(nb));
-		argv++;
-	}
-	return (list);
 }
 
 /*

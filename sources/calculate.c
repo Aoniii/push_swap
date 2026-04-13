@@ -13,43 +13,6 @@
 #include "pushswap.h"
 
 /*
-*	Initialize the rotate
-*/
-static t_rotate	init_rotate(void)
-{
-	t_rotate	rotate;
-
-	rotate.ra = 0;
-	rotate.rb = 0;
-	rotate.rra = 0;
-	rotate.rrb = 0;
-	return (rotate);
-}
-
-/*
-*	Count the number of rotate
-*/
-static int	count_rotate(t_rotate rotate)
-{
-	int	i;
-
-	i = 0;
-	while (rotate.ra > 0 && rotate.rb > 0)
-	{
-		rotate.ra--;
-		rotate.rb--;
-		i++;
-	}
-	while (rotate.rra > 0 && rotate.rrb > 0)
-	{
-		rotate.rra--;
-		rotate.rrb--;
-		i++;
-	}
-	return (i + rotate.ra + rotate.rb + rotate.rra + rotate.rrb);
-}
-
-/*
 *	Get the next value of the list
 */
 static int	next(int x, t_list *list)
@@ -99,34 +62,42 @@ static t_rotate	smart_calc(t_list *list, int next, t_rotate rotate)
 	return (rotate);
 }
 
+static t_rotate	calc_cost(t_list **list, t_list *cur, int i, int size)
+{
+	t_rotate	tmp;
+	int			n;
+
+	tmp = init_rotate();
+	if (i <= size - i)
+		tmp.rb = i;
+	else
+		tmp.rrb = size - i;
+	n = next(*((int *)(cur->content)), list[A]);
+	tmp = smart_calc(list[A], n, tmp);
+	return (tmp);
+}
+
 /*
 *	Calculate the rotate to the list
-*	The code are slow because he try multiple rotate possibilities
 *	Return the rotate
 */
 t_rotate	calculate(t_list **list)
 {
 	t_rotate	rotate;
-	t_rotate	rotate_tmp;
+	t_rotate	tmp;
 	int			i;
-	int			size;
-	int			n;
+	t_list		*cur;
 
 	i = 0;
-	size = ft_lstsize(list[B]);
-	while (i < size)
+	cur = list[B];
+	while (cur)
 	{
-		rotate_tmp = init_rotate();
-		if (i <= size - i)
-			rotate_tmp.rb = i;
-		else
-			rotate_tmp.rrb = size - i;
-		n = next(get_at_index(list[B], i), list[A]);
-		rotate_tmp = smart_calc(list[A], n, rotate_tmp);
-		if (i == 0 || count_rotate(rotate) > count_rotate(rotate_tmp))
-			rotate = rotate_tmp;
+		tmp = calc_cost(list, cur, i, ft_lstsize(list[B]));
+		if (i == 0 || count_rotate(rotate) > count_rotate(tmp))
+			rotate = tmp;
 		if (count_rotate(rotate) <= 1)
 			break ;
+		cur = cur->next;
 		i++;
 	}
 	return (rotate);

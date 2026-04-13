@@ -19,6 +19,7 @@ static t_list	*list_penultimate(t_list *lst)
 {
 	t_list	*out;
 
+	out = NULL;
 	while (lst)
 	{
 		if (!lst->next)

@@ -2,6 +2,7 @@ NAME			=	push_swap
 NAME_BONUS		=	checker
 SRCS			=	main.c \
 					sources/parsing.c \
+					sources/parsing2.c \
 					sources/swap.c \
 					sources/push.c \
 					sources/rotate.c \
@@ -10,9 +11,11 @@ SRCS			=	main.c \
 					sources/utils.c \
 					sources/sort_big.c \
 					sources/utils2.c \
-					sources/calculate.c
+					sources/calculate.c \
+					sources/calculate2.c
 SRCS_BONUS		=	main_bonus.c \
 					sources/parsing.c \
+					sources/parsing2.c \
 					sources/swap.c \
 					sources/push.c \
 					sources/rotate.c \
