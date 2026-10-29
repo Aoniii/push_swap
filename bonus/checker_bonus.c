@@ -73,30 +73,27 @@ static int	double_ctrl_d(t_list **list, char *line)
 static int	loop(t_list **list, char **line, char **tmp, int *res)
 {
 	char	buffer[2];
+	int		ret;
 
 	*res = read(0, buffer, 1);
 	buffer[*res] = '\0';
 	if (*res == 0)
 		return (double_ctrl_d(list, *line));
-	else if (buffer[0] != '\n')
+	if (buffer[0] != '\n')
 	{
 		*tmp = ft_strjoin(*line, buffer);
-		if (*line)
-			free(*line);
-		*line = *tmp;
-	}
-	else
-	{
-		if (!*line || do_instruction(*line, list) == 0)
-		{
-			free(*line);
-			*line = NULL;
-			return (2);
-		}
 		free(*line);
-		*line = NULL;
+		*line = *tmp;
+		if (!*line)
+			return (2);
+		return (0);
 	}
-	return (0);
+	ret = 0;
+	if (!*line || do_instruction(*line, list) == 0)
+		ret = 2;
+	free(*line);
+	*line = NULL;
+	return (ret);
 }
 
 /*
