@@ -40,13 +40,13 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	list[A] = args(&argv[1]);
+	list[B] = NULL;
 	if (!list[A])
 	{
 		cleanup(list);
 		ft_putstr_fd("Error\n", 2);
 		return (1);
 	}
-	list[B] = NULL;
 	checker(list);
 	cleanup(list);
 	return (0);
