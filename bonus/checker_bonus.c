@@ -52,7 +52,6 @@ static int	do_instruction(char *line, t_list **list)
 *	Return:
 *	1 if the instruction is valid,
 *	2 if the instruction is not valid, (Error)
-*	0 otherwise
 */
 static int	double_ctrl_d(t_list **list, char *line)
 {
