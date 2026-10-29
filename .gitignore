@@ -5,3 +5,4 @@ push_swap
 /libft/libft.a
 push_swap-42
 checker
+/tests/__pycache__
