@@ -56,9 +56,9 @@ static int	do_instruction(char *line, t_list **list)
 */
 static int	double_ctrl_d(t_list **list, char *line)
 {
+	(void)list;
 	if (line && *line)
-		if (do_instruction(line, list) == 0)
-			return (2);
+		return (2);
 	return (1);
 }
 
@@ -88,7 +88,7 @@ static int	loop(t_list **list, char **line, char **tmp, int *res)
 	}
 	else
 	{
-		if (do_instruction(*line, list) == 0)
+		if (!*line || do_instruction(*line, list) == 0)
 		{
 			free(*line);
 			*line = NULL;
