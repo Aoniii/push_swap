@@ -170,7 +170,9 @@ def test_norminette():
     print("Norminette:")
 
     if shutil.which("norminette") is None:
-        check("norminette", False, "norminette is not installed (pipx install norminette)")
+        check(
+            "norminette", False, "norminette is not installed (pipx install norminette)"
+        )
         return
 
     out, err, code = run(["norminette", "."], timeout=60)
@@ -183,7 +185,8 @@ def test_norminette():
     check(
         f"{len(files)} files checked",
         code == 0 and not errors,
-        f"{describe(code)}\n" + "\n".join("      " + line for line in errors + err.splitlines()),
+        f"{describe(code)}\n"
+        + "\n".join("      " + line for line in errors + err.splitlines()),
     )
 
 
