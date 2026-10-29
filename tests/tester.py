@@ -4,6 +4,7 @@
 Usage (from the root of the project):
     ./tests/tester.py                         error cases, valid cases,
                                               permutations and benchmarks
+    ./tests/tester.py norminette              norminette on every .c and .h file
     ./tests/tester.py valgrind                error and valid cases under valgrind
     ./tests/tester.py benchmark SIZE [TRIES]  sort TRIES random lists of SIZE numbers
 """
@@ -11,6 +12,7 @@ Usage (from the root of the project):
 import argparse
 import os
 import random
+import shutil
 import signal
 import subprocess
 import tempfile
@@ -162,6 +164,29 @@ VALID_CASES = [
 ]
 
 
+def test_norminette():
+    """Run norminette on every .c and .h file of the project (libft included).
+    Only one line is printed, plus the norm errors of the files in error."""
+    print("Norminette:")
+
+    if shutil.which("norminette") is None:
+        check("norminette", False, "norminette is not installed (pipx install norminette)")
+        return
+
+    out, err, code = run(["norminette", "."], timeout=60)
+    lines = out.splitlines()
+    # Each file gives a "file.c: OK!" or "file.c: Error!" line, followed by
+    # its errors, so every line that isn't "OK!" is worth showing
+    files = [line for line in lines if line.endswith((": OK!", ": Error!"))]
+    errors = [line for line in lines if not line.endswith(": OK!")]
+
+    check(
+        f"{len(files)} files checked",
+        code == 0 and not errors,
+        f"{describe(code)}\n" + "\n".join("      " + line for line in errors + err.splitlines()),
+    )
+
+
 def test_errors():
     """Every invalid input must give "Error\n" on stderr and nothing on stdout."""
     print("Error:")
@@ -285,6 +310,7 @@ if __name__ == "__main__":
     # No mode given (opts.mode is None) runs the default full test suite
     sub = parser.add_subparsers(dest="mode")
 
+    sub.add_parser("norminette", help="norminette on every .c and .h file")
     sub.add_parser("valgrind", help="error and valid cases under valgrind")
 
     bench = sub.add_parser("benchmark", help="sort TRIES random lists of SIZE numbers")
@@ -295,7 +321,9 @@ if __name__ == "__main__":
 
     opts = parser.parse_args()
 
-    if opts.mode == "valgrind":
+    if opts.mode == "norminette":
+        test_norminette()
+    elif opts.mode == "valgrind":
         # Module level, so no "global" is needed to change it
         use_valgrind = True
         test_errors()
