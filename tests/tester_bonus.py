@@ -5,6 +5,7 @@ Build it first with "make bonus". Usage (from the root of the project):
     ./tests/tester_bonus.py                      every test below, except valgrind
     ./tests/tester_bonus.py norminette           norminette on every .c and .h file
     ./tests/tester_bonus.py valgrind             handwritten cases under valgrind
+    ./tests/tester_bonus.py malloc               make each malloc fail, one at a time
     ./tests/tester_bonus.py random SIZE [TRIES]  TRIES random lists of SIZE numbers
                                                  with random instructions
 
@@ -232,6 +233,33 @@ def test_random(size, tries=10):
         print(f"      {e}")
 
 
+# (name, arguments, instructions): every malloc of these runs is made to fail
+# once. The checker reads stdin one character at a time with ft_strjoin, so
+# every character of the instructions is a malloc.
+MALLOC_CASES = [
+    ("instructions", ["3", "2", "1"], "sa\nrra\n"),
+    ("single string", ["3 2 1"], "sa\nrra\n"),
+    ("no instruction", ["2", "1"], ""),
+    ("invalid instruction", ["2", "1"], "sa\nfoo\n"),
+    ("unfinished instruction", ["2", "1"], "sa"),
+    ("error (duplicate)", ["1", "2", "1"], "sa\n"),
+]
+
+
+def test_malloc_cases():
+    print("Malloc failures:")
+    if not tester.build_malloc_lib():
+        return
+    for name, args, stdin in MALLOC_CASES:
+        tester.test_malloc(name, [BONUS] + args, stdin)
+
+    # A real output of push_swap, much longer than the handwritten ones.
+    # random.Random(42) always gives the same list, so a KO can be reproduced
+    args = [str(n) for n in random.Random(42).sample(range(-500, 500), 20)]
+    instructions, _, _ = run(["./push_swap"] + args)
+    tester.test_malloc("push_swap output for 20 numbers", [BONUS] + args, instructions)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # No mode given (opts.mode is None) runs the default full test suite
@@ -239,6 +267,7 @@ if __name__ == "__main__":
 
     sub.add_parser("norminette", help="norminette on every .c and .h file")
     sub.add_parser("valgrind", help="handwritten cases under valgrind")
+    sub.add_parser("malloc", help="make each malloc fail, one at a time")
 
     rand = sub.add_parser("random", help="TRIES random lists of SIZE numbers")
     rand.add_argument("size", type=int, help="size of the lists")
@@ -248,6 +277,8 @@ if __name__ == "__main__":
 
     if opts.mode == "norminette":
         tester.test_norminette()
+    elif opts.mode == "malloc":
+        test_malloc_cases()
     elif opts.mode == "random":
         test_random(opts.size, opts.tries)
     else:

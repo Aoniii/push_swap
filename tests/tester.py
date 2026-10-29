@@ -6,6 +6,7 @@ Usage (from the root of the project):
                                               permutations and benchmarks
     ./tests/tester.py norminette              norminette on every .c and .h file
     ./tests/tester.py valgrind                error and valid cases under valgrind
+    ./tests/tester.py malloc                  make each malloc fail, one at a time
     ./tests/tester.py benchmark SIZE [TRIES]  sort TRIES random lists of SIZE numbers
 """
 
@@ -55,16 +56,26 @@ VALGRIND = [
 # Set to True by the "valgrind" mode
 use_valgrind = False
 
+# malloc_fail.c is built into a shared library, loaded in the program with
+# LD_PRELOAD to replace its malloc() and free(). It makes the Nth malloc()
+# return NULL, and writes "<malloc calls> <blocks not freed>" in the report
+# file when the program ends (no report = the program crashed).
+TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
+MALLOC_SRC = os.path.join(TESTS_DIR, "malloc_fail.c")
+MALLOC_LIB = os.path.join(tempfile.gettempdir(), "push_swap_malloc_fail.so")
+MALLOC_REPORT = os.path.join(tempfile.gettempdir(), "push_swap_malloc_report.txt")
+
 passed = 0
 failed = 0
 
 
-def run(cmd, stdin="", timeout=5):
+def run(cmd, stdin="", timeout=5, env=None):
     """Run cmd (a list) and return (stdout, stderr, code).
-    code: >= 0 normal exit, < 0 killed by a signal, None on timeout."""
+    code: >= 0 normal exit, < 0 killed by a signal, None on timeout.
+    env: environment variables of the program (None = the same as ours)."""
     try:
         r = subprocess.run(
-            cmd, input=stdin, capture_output=True, text=True, timeout=timeout
+            cmd, input=stdin, capture_output=True, text=True, timeout=timeout, env=env
         )
         return r.stdout, r.stderr, r.returncode
     except subprocess.TimeoutExpired:
@@ -165,7 +176,8 @@ VALID_CASES = [
 
 
 def test_norminette():
-    """Run norminette on every .c and .h file of the project (libft included).
+    """Run norminette on every .c and .h file of the project (libft included),
+    except the tests folder (malloc_fail.c is not part of push_swap).
     Only one line is printed, plus the norm errors of the files in error."""
     print("Norminette:")
 
@@ -175,7 +187,13 @@ def test_norminette():
         )
         return
 
-    out, err, code = run(["norminette", "."], timeout=60)
+    sources = []
+    for folder, subfolders, files in os.walk("."):
+        # Removing a folder from subfolders stops os.walk from going inside
+        subfolders[:] = [d for d in subfolders if d not in ("tests", ".git")]
+        sources += [os.path.join(folder, f) for f in files if f.endswith((".c", ".h"))]
+
+    out, err, code = run(["norminette"] + sorted(sources), timeout=60)
     lines = out.splitlines()
     # Each file gives a "file.c: OK!" or "file.c: Error!" line, followed by
     # its errors, so every line that isn't "OK!" is worth showing
@@ -308,6 +326,92 @@ def test_permutations(size):
         print(f"      {e}")
 
 
+# (name, arguments, stdin): every malloc of these runs is made to fail once
+MALLOC_CASES = [
+    ("separate arguments", ["3", "1", "2"], ""),
+    ("single string", ["3 1 2"], ""),
+    ("already sorted", ["1", "2", "3"], ""),
+    ("5 numbers", ["5", "4", "1", "3", "2"], ""),
+    ("error (duplicate)", ["1", "2", "1"], ""),
+    # random.Random(42) always gives the same list, so a KO can be reproduced
+    (
+        "100 numbers",
+        [str(n) for n in random.Random(42).sample(range(-500, 500), 100)],
+        "",
+    ),
+]
+
+
+def build_malloc_lib():
+    """Build malloc_fail.so, return False (and a KO) if it doesn't compile."""
+    _, err, code = run(["cc", "-shared", "-fPIC", "-o", MALLOC_LIB, MALLOC_SRC])
+    if code != 0:
+        check("build malloc_fail.so", False, err)
+        return False
+    return True
+
+
+def run_malloc_fail(cmd, stdin, fail_at):
+    """Run cmd with the Nth malloc failing (0 = none fails).
+    Return (stderr, code, report): report is (malloc calls, blocks not freed),
+    or None if the program crashed before writing it."""
+    if os.path.exists(MALLOC_REPORT):
+        os.remove(MALLOC_REPORT)
+    env = dict(
+        os.environ,
+        LD_PRELOAD=MALLOC_LIB,
+        MALLOC_FAIL_AT=str(fail_at),
+        MALLOC_FAIL_REPORT=MALLOC_REPORT,
+    )
+    _, err, code = run(cmd, stdin, env=env)
+    if not os.path.exists(MALLOC_REPORT):
+        return err, code, None
+    with open(MALLOC_REPORT) as f:
+        calls, alive = f.read().split()
+    return err, code, (int(calls), int(alive))
+
+
+def test_malloc(name, cmd, stdin=""):
+    """Run cmd once to count its mallocs, then once per malloc with that
+    malloc failing. Every time, the program must print "Error\n" on stderr,
+    exit by itself (no crash, no timeout) and free everything.
+    Only one line is printed, plus the failures."""
+    _, code, report = run_malloc_fail(cmd, stdin, 0)
+    if report is None:
+        check(name, False, f"normal run without failing malloc: {describe(code)}")
+        return
+    total, alive = report
+    errors = []
+    if alive:
+        errors.append(f"normal run: {alive} blocks not freed")
+
+    for fail_at in range(1, total + 1):
+        err, code, report = run_malloc_fail(cmd, stdin, fail_at)
+        if code is None or code < 0 or report is None:
+            errors.append(f"malloc #{fail_at} fails: {describe(code)}")
+        elif report[1]:
+            errors.append(f"malloc #{fail_at} fails: {report[1]} blocks not freed")
+        elif err != "Error\n":
+            errors.append(f"malloc #{fail_at} fails: stderr={err!r} {describe(code)}")
+
+    check(
+        f"{name}: {total} mallocs, each one failed once",
+        not errors,
+        f"{len(errors)} failed",
+    )
+    # Show only the first failures: the first one is often the cause of the others
+    for e in errors[:10]:
+        print(f"      {e}")
+
+
+def test_malloc_cases():
+    print("Malloc failures:")
+    if not build_malloc_lib():
+        return
+    for name, args, stdin in MALLOC_CASES:
+        test_malloc(name, ["./push_swap"] + args, stdin)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # No mode given (opts.mode is None) runs the default full test suite
@@ -315,6 +419,7 @@ if __name__ == "__main__":
 
     sub.add_parser("norminette", help="norminette on every .c and .h file")
     sub.add_parser("valgrind", help="error and valid cases under valgrind")
+    sub.add_parser("malloc", help="make each malloc fail, one at a time")
 
     bench = sub.add_parser("benchmark", help="sort TRIES random lists of SIZE numbers")
     bench.add_argument("size", type=int, help="size of the list to be benchmarked")
@@ -331,6 +436,8 @@ if __name__ == "__main__":
         use_valgrind = True
         test_errors()
         test_valid()
+    elif opts.mode == "malloc":
+        test_malloc_cases()
     elif opts.mode == "benchmark":
         benchmark(opts.size, opts.tries)
     else:
