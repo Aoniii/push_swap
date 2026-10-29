@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
+"""Tester for push_swap.
+
+Usage (from the root of the project):
+    ./tests/tester.py                         error cases, valid cases,
+                                              permutations and benchmarks
+    ./tests/tester.py valgrind                error and valid cases under valgrind
+    ./tests/tester.py benchmark SIZE [TRIES]  sort TRIES random lists of SIZE numbers
+"""
+
 import argparse
+import os
 import random
 import signal
 import subprocess
+import tempfile
 from itertools import permutations
 
 GREEN = "\033[32m"
@@ -12,8 +23,10 @@ RESET = "\033[0m"
 INT_MIN = -2147483648
 INT_MAX = 2147483647
 
+# Checker provided by 42, used as the reference to know if a list is sorted
 CHECKER = "./resources/checker_linux"
 
+# Maximum number of moves allowed by the subject for each size
 MAX_MOVES = {
     3: 3,
     5: 12,
@@ -21,11 +34,32 @@ MAX_MOVES = {
     500: 5500,
 }
 
+# Valgrind writes its report in a file instead of stderr, so stderr only
+# contains what push_swap prints ("Error\n" or nothing).
+# --error-exitcode=42 replaces the exit code of push_swap when a leak or a
+# memory error is found, so the "code == 0" / "code == 1" checks fail by
+# themselves. --errors-for-leak-kinds=all also counts "still reachable"
+# memory (memory not freed before exit()).
+VALGRIND_LOG = os.path.join(tempfile.gettempdir(), "push_swap_valgrind.log")
+VALGRIND = [
+    "valgrind",
+    "--leak-check=full",
+    "--show-leak-kinds=all",
+    "--errors-for-leak-kinds=all",
+    "--error-exitcode=42",
+    f"--log-file={VALGRIND_LOG}",
+]
+
+# Set to True by the "valgrind" mode
+use_valgrind = False
+
 passed = 0
 failed = 0
 
 
 def run(cmd, stdin="", timeout=5):
+    """Run cmd (a list) and return (stdout, stderr, code).
+    code: >= 0 normal exit, < 0 killed by a signal, None on timeout."""
     try:
         r = subprocess.run(
             cmd, input=stdin, capture_output=True, text=True, timeout=timeout
@@ -35,7 +69,35 @@ def run(cmd, stdin="", timeout=5):
         return "", "", None
 
 
+def run_push_swap(args, stdin=""):
+    """Run ./push_swap, under valgrind if the valgrind mode is enabled.
+    The checker of 42 always uses run(): we don't test its leaks."""
+    if use_valgrind:
+        # Valgrind makes the program 20 to 50 times slower
+        return run(VALGRIND + ["./push_swap"] + args, stdin, timeout=30)
+    return run(["./push_swap"] + args, stdin)
+
+
+def valgrind_log():
+    """Return the report of the last valgrind run, to show it in a KO.
+    The banner (everything up to "Parent PID") is skipped, and the "==PID== "
+    prefix is removed from every line to keep the report readable."""
+    if not use_valgrind:
+        return ""
+    with open(VALGRIND_LOG) as f:
+        lines = f.read().splitlines()
+    for i, line in enumerate(lines):
+        if "Parent PID" in line:
+            lines = lines[i + 1 :]
+            break
+    lines = [
+        line.split("== ", 1)[-1] if line.startswith("==") else line for line in lines
+    ]
+    return "\n" + "\n".join("      " + line for line in lines if line.strip("= "))
+
+
 def describe(code):
+    """Turn an exit code into a readable text (exit 1, SIGSEGV, TIMEOUT)."""
     if code is None:
         return "TIMEOUT"
     if code < 0:
@@ -44,6 +106,7 @@ def describe(code):
 
 
 def check(name, ok, detail=""):
+    """Print OK or KO for a test, detail is only shown on a KO."""
     global passed, failed
     if ok:
         passed += 1
@@ -53,6 +116,7 @@ def check(name, ok, detail=""):
         print(f"{RED}[KO]{RESET} {name}  {detail}")
 
 
+# (name, arguments): push_swap must print "Error\n" on stderr and exit 1
 ERROR_CASES = [
     ("duplicate", ["1", "1"]),
     ("empty argument", [""]),
@@ -75,6 +139,9 @@ ERROR_CASES = [
     ("only sign in single string", ["1 - 2"]),
 ]
 
+# (name, arguments, expected stdout): push_swap must exit 0 with nothing on
+# stderr. If the expected stdout is None, the output depends on the
+# algorithm, so we only ask the checker of 42 if the list ends up sorted.
 VALID_CASES = [
     ("negative", ["-1"], ""),
     ("padding with whitespace", ["   1"], ""),
@@ -95,21 +162,25 @@ VALID_CASES = [
 ]
 
 
-def default():
+def test_errors():
+    """Every invalid input must give "Error\n" on stderr and nothing on stdout."""
     print("Error:")
 
     for name, args in ERROR_CASES:
-        out, err, code = run(["./push_swap"] + args)
+        out, err, code = run_push_swap(args)
         check(
             name,
-            err == "Error\n" and out == "" and code is not None and code == 1,
-            f"stdout={out!r} stderr={err!r} {describe(code)}",
+            err == "Error\n" and out == "" and code == 1,
+            f"stdout={out!r} stderr={err!r} {describe(code)}{valgrind_log()}",
         )
 
+
+def test_valid():
+    """Every valid input must be sorted, or give the exact expected output."""
     print("\nValid:")
 
     for name, args, output in VALID_CASES:
-        out, err, code = run(["./push_swap"] + args)
+        out, err, code = run_push_swap(args)
         if output is None:
             c_out, _, _ = run([CHECKER] + args, stdin=out)
             ok = c_out == "OK\n"
@@ -117,16 +188,16 @@ def default():
             ok = out == output
         check(
             name,
-            ok and err == "" and code is not None and code == 0,
-            f"stdout={out!r} stderr={err!r} {describe(code)}",
+            ok and err == "" and code == 0,
+            f"stdout={out!r} stderr={err!r} {describe(code)}{valgrind_log()}",
         )
-
-    print(f"\n{passed} OK, {failed} KO")
 
 
 def test_sort(nums):
+    """Sort nums with push_swap, check the result with the checker of 42.
+    Return the number of moves, or None if the list is not sorted."""
     args = [str(n) for n in nums]
-    out, err, code = run(["./push_swap"] + args)
+    out, err, code = run_push_swap(args)
     if code is None or code < 0 or err:
         check(
             f"{len(nums)} numbers", False, f"push_swap: {describe(code)} stderr={err!r}"
@@ -145,8 +216,10 @@ def test_sort(nums):
 
 
 def benchmark(size, tries=10):
+    """Sort `tries` random lists of `size` unique numbers, print the stats."""
     results = []
     for _ in range(tries):
+        # range() is lazy, so this doesn't build a list of 4 billion numbers
         nums = random.sample(range(INT_MIN, INT_MAX), size)
         moves = test_sort(nums)
         if moves is not None:
@@ -159,8 +232,20 @@ def benchmark(size, tries=10):
             f"min {min(results)}, avg {avg:.1f}, max {max(results)}"
         )
 
+    # The evaluation looks at the worst case, not the average, so the max
+    # must stay under the limit of the subject (only for sizes that have one)
+    limit = MAX_MOVES.get(size)
+    if limit is not None and results:
+        check(
+            f"max {max(results)} moves <= limit {limit}",
+            max(results) <= limit,
+            f"{sum(m > limit for m in results)}/{len(results)} sorts over the limit",
+        )
+
 
 def test_permutations(size):
+    """Test every possible order of 1..size, with the move limit of the
+    subject if there is one. Only one line is printed, plus the failures."""
     limit = MAX_MOVES.get(size)
     total = 0
     worst = 0
@@ -170,7 +255,7 @@ def test_permutations(size):
         args = [str(n) for n in perm]
         total += 1
 
-        out, err, code = run(["./push_swap"] + args)
+        out, err, code = run_push_swap(args)
         if code != 0 or err:
             errors.append(f"{' '.join(args)}: {describe(code)} stderr={err!r}")
             continue
@@ -190,42 +275,44 @@ def test_permutations(size):
         not errors,
         f"{len(errors)} failed",
     )
+    # Show only the first failures, with the arguments to reproduce them
     for e in errors[:10]:
         print(f"      {e}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "size",
-        type=int,
-        nargs="?",
-        default=None,
-        help="size of the list to be benchmarked",
+    # No mode given (opts.mode is None) runs the default full test suite
+    sub = parser.add_subparsers(dest="mode")
+
+    sub.add_parser("valgrind", help="error and valid cases under valgrind")
+
+    bench = sub.add_parser("benchmark", help="sort TRIES random lists of SIZE numbers")
+    bench.add_argument("size", type=int, help="size of the list to be benchmarked")
+    bench.add_argument(
+        "tries", type=int, nargs="?", default=10, help="number of attempts"
     )
-    parser.add_argument(
-        "attempts",
-        type=int,
-        nargs="?",
-        default=None,
-        help="number of attempts",
-    )
+
     opts = parser.parse_args()
 
-    if opts.size is None:
-        default()
+    if opts.mode == "valgrind":
+        # Module level, so no "global" is needed to change it
+        use_valgrind = True
+        test_errors()
+        test_valid()
+    elif opts.mode == "benchmark":
+        benchmark(opts.size, opts.tries)
+    else:
+        test_errors()
+        test_valid()
 
         print("\nPermutations:")
         for size in range(1, 6):
             test_permutations(size)
 
-        size = [100, 500]
-        for s in size:
-            limit = MAX_MOVES.get(s)
-            print(f"\n{s} numbers (limit {limit}):")
+        for s in [100, 500]:
+            print(f"\n{s} numbers (limit {MAX_MOVES[s]}):")
             benchmark(s)
-    else:
-        if opts.attempts:
-            benchmark(opts.size, opts.attempts)
-        else:
-            benchmark(opts.size)
+
+    # Printed at the very end so it counts every test of the mode
+    print(f"\n{passed} OK, {failed} KO")
