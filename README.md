@@ -1,6 +1,6 @@
-# PUSH_SWAP
+*This project has been created as part of the 42 curriculum by snourry.*
 
-This project has been created as part of the 42 curriculum by snourry.
+# PUSH_SWAP
 
 ## Description
 
