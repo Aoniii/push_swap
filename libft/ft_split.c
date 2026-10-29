@@ -12,14 +12,15 @@
 
 #include "libft.h"
 
-static void	ft_free_all(char **dest, size_t index)
+static char	**ft_free_all(char **dest, size_t index)
 {
 	while (index > 0)
 	{
-		free(dest[index]);
 		index--;
+		free(dest[index]);
 	}
 	free(dest);
+	return (NULL);
 }
 
 static size_t	ft_words(const char *s, char c)
@@ -51,7 +52,7 @@ static void	ft_write(char *ptr, char const *s, char c)
 	ptr[i] = 0;
 }
 
-static void	ft_tab(char **ptr, char const *s, char c)
+static char	**ft_tab(char **ptr, char const *s, char c)
 {
 	size_t	i;
 	size_t	j;
@@ -77,11 +78,12 @@ static void	ft_tab(char **ptr, char const *s, char c)
 			i++;
 	}
 	ptr[index] = 0;
+	return (ptr);
 }
 
 /**
  * @brief Allows and returns an array of strings obtained.
- * 
+ *
  * @param s The string to be cut.
  * @param c The delimiter character.
  * @return (char**) The array of new strings resulting from the split.
@@ -95,6 +97,5 @@ char	**ft_split(char const *s, char c)
 	ptr = ft_calloc(sizeof(char *), ft_words(s, c) + 1);
 	if (!ptr)
 		return (0);
-	ft_tab(ptr, (char *) s, c);
-	return (ptr);
+	return (ft_tab(ptr, (char *) s, c));
 }
